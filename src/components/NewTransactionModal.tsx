@@ -1,9 +1,10 @@
-import { Box, Button, Flex } from '@chakra-ui/react'
+import { Box, Button, Flex, Grid } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { X } from 'phosphor-react'
+import { ArrowCircleUp, X } from 'phosphor-react'
 
 import styled from 'styled-components'
 import { Input } from './Input'
+import { TransactionTypeButton } from './TransactionTypeButton'
 
 export const Overlay = styled(Dialog.Overlay)`
   position: fixed;
@@ -36,6 +37,18 @@ export const NewTransactionModal = () => (
         <Input placeholder="Description" isRequired />
         <Input placeholder="Price" isRequired />
         <Input placeholder="Category" isRequired />
+
+        <Grid gridTemplateColumns="repeat(2, 1fr)" gap="1rem" mt="0.5rem">
+          <TransactionTypeButton type="income">
+            <ArrowCircleUp size={24} />
+            Income
+          </TransactionTypeButton>
+
+          <TransactionTypeButton type="outcome">
+            <ArrowCircleUp size={24} />
+            Outcome
+          </TransactionTypeButton>
+        </Grid>
 
         <Button
           type="submit"
