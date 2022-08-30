@@ -1,6 +1,7 @@
-import { Box, Button, Flex, Grid } from '@chakra-ui/react'
+import { Button, Flex, Grid, useRadioGroup } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowCircleUp, X } from 'phosphor-react'
+import { useMemo } from 'react'
 
 import styled from 'styled-components'
 import { Input } from './Input'
@@ -26,63 +27,83 @@ export const Content = styled(Dialog.Content)`
   transform: translate(-50%, -50%);
 `
 
-export const NewTransactionModal = () => (
-  <Dialog.Portal>
-    <Overlay />
+export const NewTransactionModal = () => {
+  const options = useMemo<('Income' | 'Outcome')[]>(
+    () => ['Income', 'Outcome'],
+    [],
+  )
 
-    <Content>
-      <Dialog.Title>New Transaction</Dialog.Title>
+  const { getRootProps, getRadioProps } = useRadioGroup({
+    name: 'option',
+    onChange: console.log,
+  })
 
-      <Flex as="form" action="" mt="2rem" flexDir="column" gap="1rem">
-        <Input placeholder="Description" isRequired />
-        <Input placeholder="Price" isRequired />
-        <Input placeholder="Category" isRequired />
+  const group = useMemo(() => getRootProps(), [getRootProps])
 
-        <Grid gridTemplateColumns="repeat(2, 1fr)" gap="1rem" mt="0.5rem">
-          <TransactionTypeButton type="income">
-            <ArrowCircleUp size={24} />
-            Income
-          </TransactionTypeButton>
+  return (
+    <Dialog.Portal>
+      <Overlay />
 
-          <TransactionTypeButton type="outcome">
-            <ArrowCircleUp size={24} />
-            Outcome
-          </TransactionTypeButton>
-        </Grid>
+      <Content>
+        <Dialog.Title>New Transaction</Dialog.Title>
 
-        <Button
-          type="submit"
-          h="58px"
-          bgColor="primary.500"
-          _hover={{
-            backgroundColor: 'primary.700',
-          }}
-          _active={{
-            backgroundColor: 'primary.700',
-          }}
-        >
-          Register
-        </Button>
-      </Flex>
+        <Flex as="form" action="" mt="2rem" flexDir="column" gap="1rem">
+          <Input placeholder="Description" isRequired />
+          <Input placeholder="Price" isRequired />
+          <Input placeholder="Category" isRequired />
 
-      <Dialog.Close asChild>
-        <Button
-          position="absolute"
-          background="transparent"
-          top="1.5rem"
-          right="1.5rem"
-          lineHeight="0"
-          color="gray.500"
-          _hover={{
-            backgroundColor: 'transparent',
-          }}
-          _active={{
-            backgroundColor: 'transparent',
-          }}
-        >
-          <X size={24} />
-        </Button>
-      </Dialog.Close>
-    </Content>
-  </Dialog.Portal>
-)
+          <Grid
+            {...group}
+            gridTemplateColumns="repeat(2, 1fr)"
+            gap="1rem"
+            mt="0.5rem"
+          >
+            {options.map((value) => {
+              const radio = getRadioProps({ value })
+
+              return (
+                <TransactionTypeButton key={value} {...radio} variant={value}>
+                  <ArrowCircleUp size={24} />
+                  {value}
+                </TransactionTypeButton>
+              )
+            })}
+          </Grid>
+
+          <Button
+            type="submit"
+            h="58px"
+            bgColor="primary.500"
+            _hover={{
+              backgroundColor: 'primary.700',
+            }}
+            _active={{
+              backgroundColor: 'primary.700',
+            }}
+          >
+            Register
+          </Button>
+        </Flex>
+
+        <Dialog.Close asChild>
+          <Button
+            position="absolute"
+            background="transparent"
+            top="1.5rem"
+            right="1.5rem"
+            lineHeight="0"
+            color="gray.500"
+            _hover={{
+              backgroundColor: 'transparent',
+            }}
+            _active={{
+              backgroundColor: 'transparent',
+            }}
+          >
+            <X size={24} />
+          </Button>
+        </Dialog.Close>
+      </Content>
+    </Dialog.Portal>
+  )
+}
