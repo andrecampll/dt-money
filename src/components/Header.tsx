@@ -1,7 +1,7 @@
 import { Box, Button, Image } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
 
-import logoImg from '../../public/logo-full.svg'
+import logoImg from '../assets/logo-full.svg'
 import { NewTransactionModal } from './NewTransactionModal'
 
 export const Header = () => (
