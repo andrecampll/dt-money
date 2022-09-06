@@ -1,23 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
 import { Box } from '@chakra-ui/react'
 
 import { Header, Summary } from '../../components'
-import { Transaction } from '../../types'
+import { useTransaction } from '../../hooks'
 import { SearchForm, Table } from './components'
 
 export const Transactions = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-
-  const loadTransactions = useCallback(async () => {
-    const response = await fetch('http://localhost:3000/transactions')
-    const data = await response.json()
-
-    setTransactions(data)
-  }, [])
-
-  useEffect(() => {
-    loadTransactions()
-  }, [loadTransactions])
+  const { transactions } = useTransaction()
 
   return (
     <Box>
@@ -25,7 +13,7 @@ export const Transactions = () => {
       <Summary />
 
       <SearchForm />
-      <Table transactions={transactions} variant="income" />
+      <Table transactions={transactions} />
     </Box>
   )
 }

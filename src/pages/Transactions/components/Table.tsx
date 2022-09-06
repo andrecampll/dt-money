@@ -10,11 +10,10 @@ import {
 import { Transaction } from '../../../types'
 
 type Props = {
-  variant: 'income' | 'outcome'
   transactions: Transaction[]
 }
 
-export const Table = ({ variant, transactions }: Props) => (
+export const Table = ({ transactions }: Props) => (
   <TableContainer maxW="1120px" margin="2rem auto 0">
     <_Table
       padding="0 1.5rem"
