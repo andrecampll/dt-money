@@ -1,11 +1,11 @@
 import { Box } from '@chakra-ui/react'
 
 import { Header, Summary } from '../../components'
-import { useTransaction } from '../../hooks'
+import { useTransactions } from '../../hooks'
 import { SearchForm, Table } from './components'
 
 export const Transactions = () => {
-  const { transactions } = useTransaction()
+  const { transactions } = useTransactions()
 
   return (
     <Box>

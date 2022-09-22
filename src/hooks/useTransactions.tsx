@@ -47,6 +47,6 @@ export const TransactionsProvider = ({
   )
 }
 
-export const useTransaction = () => {
+export const useTransactions = () => {
   return useContext(TransactionsContext)
 }
