@@ -1,6 +1,8 @@
 import { ReactNode, useMemo } from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
 
+import { priceFormatter } from '../utils'
+
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from 'phosphor-react'
 
 type Props = {
@@ -39,7 +41,7 @@ export const SummaryCard = ({ type, amount }: Props) => {
       </Flex>
 
       <Text as="strong" display="block" mt="1rem" fontSize="2rem">
-        R$ {amount}
+        {priceFormatter.format(amount)}
       </Text>
     </Box>
   )

@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react'
 
 import { Transaction } from '../../../types'
+import { dateFormatter, priceFormatter } from '../../../utils'
 
 type Props = {
   transactions: Transaction[]
@@ -47,7 +48,8 @@ export const Table = ({ transactions }: Props) => (
                 as="span"
                 color={transaction.type === 'income' ? 'green.300' : 'red.300'}
               >
-                R$ {transaction.price}
+                {transaction.type === 'outcome' && '- '}
+                {priceFormatter.format(transaction.price)}
               </Text>
             </Td>
             <Td border="0" background="gray.700" padding="1.25rem 2rem">
@@ -60,7 +62,7 @@ export const Table = ({ transactions }: Props) => (
               background="gray.700"
               padding="1.25rem 2rem"
             >
-              {transaction.createdAt}
+              {dateFormatter.format(new Date(transaction.createdAt))}
             </Td>
           </Tr>
         ))}
