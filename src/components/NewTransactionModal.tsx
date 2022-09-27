@@ -1,33 +1,34 @@
+import { useMemo } from 'react'
 import { Button, Flex, Grid, useRadioGroup } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowCircleUp, X } from 'phosphor-react'
-import { useMemo } from 'react'
+import * as zod from 'zod'
 
-import styled from 'styled-components'
 import { Input } from './Input'
 import { TransactionTypeButton } from './TransactionTypeButton'
 
-export const Overlay = styled(Dialog.Overlay)`
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-`
+import * as S from './NewTransactionModal.styles'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-export const Content = styled(Dialog.Content)`
-  min-width: 32rem;
-  border-radius: 6px;
-  padding: 2.5rem 3rem;
-  background: #202024;
+const newTransactionFormSchema = zod.object({
+  description: zod.string(),
+  price: zod.number(),
+  category: zod.string(),
+  // type: zod.enum(['income', 'outcome']),
+})
 
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`
+type NewTransactionFormInputs = zod.infer<typeof newTransactionFormSchema>
 
 export const NewTransactionModal = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<NewTransactionFormInputs>({
+    resolver: zodResolver(newTransactionFormSchema),
+  })
+
   const options = useMemo<('Income' | 'Outcome')[]>(
     () => ['Income', 'Outcome'],
     [],
@@ -40,17 +41,44 @@ export const NewTransactionModal = () => {
 
   const group = useMemo(() => getRootProps(), [getRootProps])
 
+  const handleCreateNewTransaction = async (data: NewTransactionFormInputs) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    console.log(data)
+  }
+
   return (
     <Dialog.Portal>
-      <Overlay />
+      <S.Overlay />
 
-      <Content>
+      <S.Content>
         <Dialog.Title>New Transaction</Dialog.Title>
 
-        <Flex as="form" action="" mt="2rem" flexDir="column" gap="1rem">
-          <Input placeholder="Description" isRequired />
-          <Input placeholder="Price" isRequired />
-          <Input placeholder="Category" isRequired />
+        <Flex
+          as="form"
+          action=""
+          mt="2rem"
+          flexDir="column"
+          gap="1rem"
+          onSubmit={handleSubmit(handleCreateNewTransaction)}
+        >
+          <Input
+            type="text"
+            placeholder="Description"
+            isRequired
+            {...register('description')}
+          />
+          <Input
+            type="number"
+            placeholder="Price"
+            isRequired
+            {...register('price', { valueAsNumber: true })}
+          />
+          <Input
+            type="text"
+            placeholder="Category"
+            isRequired
+            {...register('category')}
+          />
 
           <Grid
             {...group}
@@ -80,6 +108,7 @@ export const NewTransactionModal = () => {
             _active={{
               backgroundColor: 'primary.700',
             }}
+            isLoading={isSubmitting}
           >
             Register
           </Button>
@@ -103,7 +132,7 @@ export const NewTransactionModal = () => {
             <X size={24} />
           </Button>
         </Dialog.Close>
-      </Content>
+      </S.Content>
     </Dialog.Portal>
   )
 }
