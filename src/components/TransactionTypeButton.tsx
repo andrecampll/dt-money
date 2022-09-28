@@ -1,5 +1,5 @@
 import { ReactNode, useCallback } from 'react'
-import { Box, Flex, propNames, useRadio, UseRadioProps } from '@chakra-ui/react'
+import { Box, Flex, useRadio, UseRadioProps } from '@chakra-ui/react'
 
 type Props = {
   children: ReactNode

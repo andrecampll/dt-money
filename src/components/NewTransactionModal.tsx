@@ -1,27 +1,28 @@
-import { useMemo } from 'react'
+import { ChangeEvent, useMemo } from 'react'
 import { Button, Flex, Grid, useRadioGroup } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { ArrowCircleUp, X } from 'phosphor-react'
+import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
 import * as zod from 'zod'
 
 import { Input } from './Input'
 import { TransactionTypeButton } from './TransactionTypeButton'
 
 import * as S from './NewTransactionModal.styles'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const newTransactionFormSchema = zod.object({
   description: zod.string(),
   price: zod.number(),
   category: zod.string(),
-  // type: zod.enum(['income', 'outcome']),
+  type: zod.enum(['Income', 'Outcome']),
 })
 
 type NewTransactionFormInputs = zod.infer<typeof newTransactionFormSchema>
 
 export const NewTransactionModal = () => {
   const {
+    control,
     register,
     handleSubmit,
     formState: { isSubmitting },
@@ -80,23 +81,45 @@ export const NewTransactionModal = () => {
             {...register('category')}
           />
 
-          <Grid
-            {...group}
-            gridTemplateColumns="repeat(2, 1fr)"
-            gap="1rem"
-            mt="0.5rem"
-          >
-            {options.map((value) => {
-              const radio = getRadioProps({ value })
+          <Controller
+            control={control}
+            name="type"
+            render={({ field }) => (
+              <Grid
+                {...group}
+                gridTemplateColumns="repeat(2, 1fr)"
+                gap="1rem"
+                mt="0.5rem"
+              >
+                {options.map((value) => {
+                  const radio = getRadioProps({ value })
 
-              return (
-                <TransactionTypeButton key={value} {...radio} variant={value}>
-                  <ArrowCircleUp size={24} />
-                  {value}
-                </TransactionTypeButton>
-              )
-            })}
-          </Grid>
+                  const handleChange = (
+                    event: ChangeEvent<HTMLInputElement>,
+                  ) => {
+                    radio.onChange && radio.onChange(event)
+                    field.onChange(event)
+                  }
+
+                  return (
+                    <TransactionTypeButton
+                      key={value}
+                      variant={value}
+                      {...radio}
+                      onChange={handleChange}
+                    >
+                      {value === 'Income' ? (
+                        <ArrowCircleUp size={24} />
+                      ) : (
+                        <ArrowCircleDown size={24} />
+                      )}
+                      {value}
+                    </TransactionTypeButton>
+                  )
+                })}
+              </Grid>
+            )}
+          />
 
           <Button
             type="submit"
