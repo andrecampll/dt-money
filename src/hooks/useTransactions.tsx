@@ -11,6 +11,7 @@ import { Transaction } from '../types'
 type TransactionsContextType = {
   transactions: Transaction[]
   addTransactions: (transactions: Transaction[]) => void
+  fetchTransactions: (query?: string) => Promise<void>
 }
 
 const TransactionsContext = createContext({} as TransactionsContextType)
@@ -29,19 +30,28 @@ export const TransactionsProvider = ({
     [],
   )
 
-  const loadTransactions = useCallback(async () => {
-    const response = await fetch('http://localhost:3000/transactions')
-    const data = await response.json()
+  const fetchTransactions = useCallback(
+    async (query?: string) => {
+      const url = new URL('http://localhost:3000/transactions')
 
-    addTransactions(data)
-  }, [addTransactions])
+      if (query) url.searchParams.append('q', query)
+
+      const response = await fetch(url)
+      const data = await response.json()
+
+      addTransactions(data)
+    },
+    [addTransactions],
+  )
 
   useEffect(() => {
-    loadTransactions()
-  }, [loadTransactions])
+    fetchTransactions()
+  }, [fetchTransactions])
 
   return (
-    <TransactionsContext.Provider value={{ transactions, addTransactions }}>
+    <TransactionsContext.Provider
+      value={{ transactions, addTransactions, fetchTransactions }}
+    >
       {children}
     </TransactionsContext.Provider>
   )
