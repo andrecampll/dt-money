@@ -6,6 +6,8 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { api } from '../lib'
+
 import { Transaction } from '../types'
 
 type TransactionsContextType = {
@@ -32,12 +34,11 @@ export const TransactionsProvider = ({
 
   const fetchTransactions = useCallback(
     async (query?: string) => {
-      const url = new URL('http://localhost:3000/transactions')
-
-      if (query) url.searchParams.append('q', query)
-
-      const response = await fetch(url)
-      const data = await response.json()
+      const { data } = await api.get('transactions', {
+        params: {
+          q: query,
+        },
+      })
 
       addTransactions(data)
     },
