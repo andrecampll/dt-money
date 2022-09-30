@@ -46,9 +46,9 @@ export const Table = ({ transactions }: Props) => (
             <Td border="0" background="gray.700" padding="1.25rem 2rem">
               <Text
                 as="span"
-                color={transaction.type === 'income' ? 'green.300' : 'red.300'}
+                color={transaction.type === 'Income' ? 'green.300' : 'red.300'}
               >
-                {transaction.type === 'outcome' && '- '}
+                {transaction.type === 'Outcome' && '- '}
                 {priceFormatter.format(transaction.price)}
               </Text>
             </Td>

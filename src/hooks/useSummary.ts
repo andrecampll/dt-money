@@ -8,7 +8,7 @@ export const useSummary = () => {
     () =>
       transactions.reduce(
         (acc, current) => {
-          if (current.type === 'income') {
+          if (current.type === 'Income') {
             acc.income += current.price
             acc.total += current.price
           } else {

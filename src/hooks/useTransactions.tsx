@@ -8,41 +8,55 @@ import {
 } from 'react'
 import { api } from '../lib'
 
-import { Transaction } from '../types'
+import { CreateTransactionInput, Transaction } from '../types'
 
 type TransactionsContextType = {
   transactions: Transaction[]
-  addTransactions: (transactions: Transaction[]) => void
   fetchTransactions: (query?: string) => Promise<void>
+  createTransaction: (data: CreateTransactionInput) => Promise<void>
 }
-
-const TransactionsContext = createContext({} as TransactionsContextType)
 
 type TransactionsProviderProps = {
   children: ReactNode
 }
+
+const TransactionsContext = createContext({} as TransactionsContextType)
 
 export const TransactionsProvider = ({
   children,
 }: TransactionsProviderProps) => {
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
-  const addTransactions = useCallback(
-    (newTransactions: Transaction[]) => setTransactions(newTransactions),
-    [],
-  )
-
   const fetchTransactions = useCallback(
     async (query?: string) => {
       const { data } = await api.get('transactions', {
         params: {
           q: query,
+          _sort: 'createdAt',
+          _order: 'desc',
         },
       })
 
-      addTransactions(data)
+      setTransactions(data)
     },
-    [addTransactions],
+    [setTransactions],
+  )
+
+  const createTransaction = useCallback(
+    async (newTransaction: CreateTransactionInput) => {
+      const { category, description, price, type } = newTransaction
+
+      const { data } = await api.post('transactions', {
+        description,
+        price,
+        category,
+        type,
+        createdAt: new Date(),
+      })
+
+      setTransactions((transactions) => [data, ...transactions])
+    },
+    [],
   )
 
   useEffect(() => {
@@ -51,7 +65,7 @@ export const TransactionsProvider = ({
 
   return (
     <TransactionsContext.Provider
-      value={{ transactions, addTransactions, fetchTransactions }}
+      value={{ transactions, fetchTransactions, createTransaction }}
     >
       {children}
     </TransactionsContext.Provider>

@@ -2,14 +2,15 @@ import { ChangeEvent, useMemo } from 'react'
 import { Button, Flex, Grid, useRadioGroup } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+
+import { useTransactions } from '../hooks'
 
 import { Input } from './Input'
 import { TransactionTypeButton } from './TransactionTypeButton'
-
 import * as S from './NewTransactionModal.styles'
-import { Controller, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 const newTransactionFormSchema = zod.object({
   description: zod.string(),
@@ -21,11 +22,14 @@ const newTransactionFormSchema = zod.object({
 type NewTransactionFormInputs = zod.infer<typeof newTransactionFormSchema>
 
 export const NewTransactionModal = () => {
+  const { createTransaction } = useTransactions()
+
   const {
     control,
     register,
     handleSubmit,
     formState: { isSubmitting },
+    reset,
   } = useForm<NewTransactionFormInputs>({
     resolver: zodResolver(newTransactionFormSchema),
   })
@@ -43,8 +47,11 @@ export const NewTransactionModal = () => {
   const group = useMemo(() => getRootProps(), [getRootProps])
 
   const handleCreateNewTransaction = async (data: NewTransactionFormInputs) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    console.log(data)
+    const { description, price, category, type } = data
+
+    await createTransaction({ description, price, category, type })
+
+    reset()
   }
 
   return (
