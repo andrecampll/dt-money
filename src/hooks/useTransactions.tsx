@@ -1,11 +1,5 @@
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useContextSelector } from 'use-context-selector'
 import { api } from '../lib'
 
 import { CreateTransactionInput, Transaction } from '../types'
@@ -73,5 +67,5 @@ export const TransactionsProvider = ({
 }
 
 export const useTransactions = () => {
-  return useContext(TransactionsContext)
+  return useContextSelector(TransactionsContext, (context) => context)
 }

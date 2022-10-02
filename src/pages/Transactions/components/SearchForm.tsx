@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Button, Flex, Input } from '@chakra-ui/react'
 import { MagnifyingGlass } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
@@ -12,7 +13,7 @@ const searchFormSchema = zod.object({
 
 type SearchFormInputs = zod.infer<typeof searchFormSchema>
 
-export const SearchForm = () => {
+const SearchFormComponent = () => {
   const { fetchTransactions } = useTransactions()
 
   const {
@@ -75,3 +76,5 @@ export const SearchForm = () => {
     </Flex>
   )
 }
+
+export const SearchForm = memo(SearchFormComponent)
