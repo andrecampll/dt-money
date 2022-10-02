@@ -11,8 +11,6 @@ DT Money is your favorite online wallet made with React, Vite and Chakra UI ⚛�
   <img src="./.github/homepage.png" />
 </p>
 
-Live demo: https://coffeelivery-prqt7d4xf-andrecampll.vercel.app
-
 # Outcomes 🚀
 
 - This project was made to approach and practice advanced React concepts like reducers and Context API to handle the global state management.
